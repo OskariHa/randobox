@@ -4,7 +4,7 @@ from timer import Timer
 from loginwindow import LoginWindow
 
 
-def doNothing():
+def do_nothing():
     print("MORO")
 
 
@@ -39,22 +39,22 @@ root.config(menu=menu)
 
 subMenu = Menu(menu)
 menu.add_cascade(label="File", menu=subMenu)
-subMenu.add_command(label="Stats", command=doNothing)
-subMenu.add_command(label="Accounts", command=doNothing)
+subMenu.add_command(label="Stats", command=do_nothing)
+subMenu.add_command(label="Accounts", command=do_nothing)
 subMenu.add_separator()
-subMenu.add_command(label="Exit", command=doNothing)
+subMenu.add_command(label="Exit", command=do_nothing)
 
 editMenu = Menu(menu)
 menu.add_cascade(label="Edit", menu=editMenu)
-editMenu.add_command(label="Redo", command=doNothing)
+editMenu.add_command(label="Redo", command=do_nothing)
 
 # ***** Toolbar ******
 
 toolbar = Frame(root, bg="grey")
 
-insertButt = Button(toolbar, text="Insert Image", command=doNothing)
+insertButt = Button(toolbar, text="Insert Image", command=do_nothing)
 # insertButt.pack(side=LEFT, padx=2, pady=2)
-printButt = Button(toolbar, text="Insert Image", command=doNothing)
+printButt = Button(toolbar, text="Insert Image", command=do_nothing)
 # printButt.pack(side=LEFT, padx=2, pady=2)
 
 toolbar.pack(side=TOP, fill=X)
