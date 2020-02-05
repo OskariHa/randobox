@@ -21,10 +21,13 @@ def close_program():
 loginstatus = False
 
 login_window = Tk()
-login_window.minsize(width=400, height=250)
+login_window.minsize(width=300, height=200)
 login_window.protocol("WM_DELETE_WINDOW", close_program)
 login_window.title("KEKW - Login")
-LoginWindow(login_window)
+login_window.iconbitmap(default="images/kekw.ico")
+login_window_frame = Frame(login_window, bd=1, relief=RAISED)
+login_window_frame.pack(pady=(20, 0), anchor=CENTER)
+LoginWindow(login_window_frame, login_window)
 login_window.mainloop()
 
 root = Tk()

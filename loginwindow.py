@@ -7,27 +7,28 @@ class LoginWindow:
 
     global login_status
 
-    def __init__(self, login_window):
-        self.login_window = login_window
-        self.label_name = Label(login_window, text="Name:")
-        self.label_pw = Label(login_window, text="Password:")
-        self.login_name = Entry(login_window, width=20)
-        self.login_pw = Entry(login_window, width=20)
+    def __init__(self, login_window_frame, window):
+        self.login_window_frame = login_window_frame
+        self.window = window
+        self.label_name = Label(login_window_frame, text="Name:")
+        self.label_pw = Label(login_window_frame, text="Password:")
+        self.login_name = Entry(login_window_frame, width=20)
+        self.login_pw = Entry(login_window_frame, width=20)
 
-        self.label_name.grid(row=0, column=0, pady=(50, 0))
+        self.label_name.grid(row=0, column=0, pady=(5, 0))
         self.label_pw.grid(row=1, column=0)
-        self.login_name.grid(row=0, column=1, pady=(50, 0), padx=5)
+        self.login_name.grid(row=0, column=1)
         self.login_pw.grid(row=1, column=1, padx=5)
 
-        self.login_button = Button(login_window, text="Login", command=self.loginb)
-        self.exit_button = Button(login_window, text="Exit", command=self.exitb)
-        self.create_account_button = Button(login_window, text="Create Account",
+        self.login_button = Button(login_window_frame, text="Login", command=self.loginb)
+        self.exit_button = Button(login_window_frame, text="Exit", command=self.exitb)
+        self.create_account_button = Button(login_window_frame, text="Create Account",
                                             command=self.new_account)
-        self.delete_account_button = Button(login_window, text="Delete Account",
+        self.delete_account_button = Button(login_window_frame, text="Delete Account",
                                             command=self.del_account)
 
         # testing button
-        self.show_db_btn = Button(login_window, text="show db", command=show_table)
+        self.show_db_btn = Button(login_window_frame, text="show db", command=show_table)
 
         self.login_button.grid(row=2, column=1, sticky=W, padx=10, pady=10)
         self.exit_button.grid(row=2, column=1, sticky=E, padx=10, pady=10)
@@ -46,7 +47,7 @@ class LoginWindow:
 
         if login_success:
             print("loggging")
-            self.login_window.destroy()
+            self.window.destroy()
 
     def exitb(self):
         print("exit by exit button")

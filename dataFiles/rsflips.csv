@@ -1,2 +1,4 @@
-item,buy,sold,ge price,volume
-air orb,5625,6421,6116,1411
+item,buy,sold,ge price,volume,date(m.d.y)
+air orb,5625,6421,6116,1411,04.02.20
+decorated farming urn,5021,5799,5021,400,05.02.20
+battlestaff,3077,3203,3013,1000,05.02.20
