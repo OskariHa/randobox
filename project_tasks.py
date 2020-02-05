@@ -1,6 +1,5 @@
 from tkinter import *
-from datetime import date, datetime
-import time
+from datetime import date, datetime, timedelta
 from database import submit_tasks, show_table, fetch_tasks
 
 
@@ -9,8 +8,11 @@ class DailyTasks:
 
     def __init__(self, root, toolbar):
         self.todays_date = date.today()
+        self.tomorrows_date = date.today() + timedelta(days=1)
         self.todays_date_str = self.todays_date.strftime("%d.%m")
+        self.tomorrows_date_str = self.tomorrows_date.strftime("%d.%m")
         self.date_n_year = self.todays_date.strftime("%m.%d.%y")
+        self.tomorrow_date_n_year = self.tomorrows_date.strftime("%m.%d.%y")
         self.dates = []
         self.tasks_list = []
         self.done = []
@@ -18,6 +20,16 @@ class DailyTasks:
 
         self.date_lbls = self.create_date_lbls()
         print(self.dates)
+
+        # toolbar buttons
+        self.submit_btn = Button(toolbar, text="Submit", command=self.submit_task)
+        self.revert_btn = Button(toolbar, text="Revert Changes", command=self.revert_changes)
+        self.edit_btn = Button(toolbar, text="Edit", command=self.edit)
+        self.edit_btn_pressed = False
+        self.revert_btn.pack(side=RIGHT, padx=2, pady=2)
+        self.edit_btn.pack(side=RIGHT, padx=2, pady=2)
+        self.submit_btn.pack(side=RIGHT, padx=2, pady=2)
+
         # top labels
         self.main_tasks_lbl = Label(root, text="Tasks")
         self.main_tasks_lbl.grid(row=0, column=1, pady=5)
@@ -25,23 +37,14 @@ class DailyTasks:
         self.top_date_lbl.grid(row=1, column=0)
         self.top_plan_lbl = Label(root, text="Days plan")
         self.top_plan_lbl.grid(row=1, column=1)
-        self.top_done_lbl = Label(root, text="Done today")
+        self.top_done_lbl = Label(root, text="Done")
         self.top_done_lbl.grid(row=1, column=2)
-
-        # submit and revert button
-        self.submit_btn = Button(toolbar, text="Submit", command=self.submit_task)
-        self.revert_btn = Button(toolbar, text="Revert Changes", command=self.revert_changes)
-        self.revert_btn.pack(side=RIGHT, padx=2, pady=2)
-        self.submit_btn.pack(side=RIGHT, padx=2, pady=2)
-
-        # self.submit_btn.grid(row=7, column=1)
-        # self.revert_btn.grid(row=7, column=2)
 
         # testing buttons
         self.show_db_btn = Button(root, text="show db", command=show_table)
         self.show_data_btn = Button(root, text="show data", command=self.get_data)
-        self.show_db_btn.grid(row=8, column=1)
-        self.show_data_btn.grid(row=8, column=2)
+        self.show_db_btn.grid(row=12, column=1)
+        self.show_data_btn.grid(row=12, column=2)
 
         # Date labels
 
@@ -50,6 +53,7 @@ class DailyTasks:
         self.task_date3_lbl = Label(root, text=self.date_lbls[2])
         self.task_date4_lbl = Label(root, text=self.date_lbls[3])
         self.task_date5_lbl = Label(root, text=self.date_lbls[4])
+        self.task_date6_lbl = Label(root, text=self.date_lbls[5])
 
         # Days plan entries
         self.days_task1_entry = Entry(root, width=30)
@@ -57,6 +61,7 @@ class DailyTasks:
         self.days_task3_entry = Entry(root, width=30)
         self.days_task4_entry = Entry(root, width=30)
         self.days_task5_entry = Entry(root, width=30)
+        self.days_task6_entry = Entry(root, width=30)
 
         # Days done
         self.days_done1_entry = Entry(root, width=30)
@@ -64,6 +69,7 @@ class DailyTasks:
         self.days_done3_entry = Entry(root, width=30)
         self.days_done4_entry = Entry(root, width=30)
         self.days_done5_entry = Entry(root, width=30)
+        self.days_done6_entry = Entry(root, width=30)
 
         # Griding
         self.task_date1_lbl.grid(row=2, column=0)
@@ -85,18 +91,24 @@ class DailyTasks:
         self.task_date5_lbl.grid(row=6, column=0)
         self.days_task5_entry.grid(row=6, column=1)
         self.days_done5_entry.grid(row=6, column=2)
+
+        self.task_date6_lbl.grid(row=7, column=0)
+        self.days_task6_entry.grid(row=7, column=1)
+        self.days_done6_entry.grid(row=7, column=2)
         # Fill entry's
         self.days_task1_entry.insert(0, self.tasks_list[0])
         self.days_task2_entry.insert(0, self.tasks_list[1])
         self.days_task3_entry.insert(0, self.tasks_list[2])
         self.days_task4_entry.insert(0, self.tasks_list[3])
         self.days_task5_entry.insert(0, self.tasks_list[4])
+        self.days_task6_entry.insert(0, self.tasks_list[5])
 
         self.days_done1_entry.insert(0, self.done[0])
         self.days_done2_entry.insert(0, self.done[1])
         self.days_done3_entry.insert(0, self.done[2])
         self.days_done4_entry.insert(0, self.done[3])
         self.days_done5_entry.insert(0, self.done[4])
+        self.days_done6_entry.insert(0, self.done[5])
 
         # Disable entry's
         # self.days_task1_entry.config(state="disabled")
@@ -104,12 +116,14 @@ class DailyTasks:
         self.days_task3_entry.config(state="disabled")
         self.days_task4_entry.config(state="disabled")
         self.days_task5_entry.config(state="disabled")
+        self.days_task6_entry.config(state="disabled")
 
         # self.days_done1_entry.config(state="disabled")
         # self.days_done2_entry.config(state="disabled")
         self.days_done3_entry.config(state="disabled")
         self.days_done4_entry.config(state="disabled")
         self.days_done5_entry.config(state="disabled")
+        self.days_done6_entry.config(state="disabled")
 
     def submit_task(self):
         #  **** update lists with current data ****
@@ -123,12 +137,14 @@ class DailyTasks:
         self.tasks_list.append(self.days_task3_entry.get())
         self.tasks_list.append(self.days_task4_entry.get())
         self.tasks_list.append(self.days_task5_entry.get())
+        self.tasks_list.append(self.days_task6_entry.get())
 
         self.done.append(self.days_done1_entry.get())
         self.done.append(self.days_done2_entry.get())
         self.done.append(self.days_done3_entry.get())
         self.done.append(self.days_done4_entry.get())
         self.done.append(self.days_done5_entry.get())
+        self.done.append(self.days_done6_entry.get())
 
         # **** get data from lists ****
         temp = []
@@ -149,25 +165,28 @@ class DailyTasks:
         self.days_task3_entry.delete(0, END)
         self.days_task4_entry.delete(0, END)
         self.days_task5_entry.delete(0, END)
+        self.days_task6_entry.delete(0, END)
 
         self.days_done1_entry.delete(0, END)
         self.days_done2_entry.delete(0, END)
         self.days_done3_entry.delete(0, END)
         self.days_done4_entry.delete(0, END)
         self.days_done5_entry.delete(0, END)
+        self.days_done6_entry.delete(0, END)
 
         # Fill entry's
         self.days_task1_entry.insert(0, self.tasks_list[0])
         self.days_task2_entry.insert(0, self.tasks_list[1])
         self.days_task3_entry.insert(0, self.tasks_list[2])
         self.days_task4_entry.insert(0, self.tasks_list[3])
-        self.days_task5_entry.insert(0, self.tasks_list[4])
+        self.days_task6_entry.insert(0, self.tasks_list[5])
 
         self.days_done1_entry.insert(0, self.done[0])
         self.days_done2_entry.insert(0, self.done[1])
         self.days_done3_entry.insert(0, self.done[2])
         self.days_done4_entry.insert(0, self.done[3])
         self.days_done5_entry.insert(0, self.done[4])
+        self.days_done6_entry.insert(0, self.done[5])
 
     # Format date labels for frame from "mm.dd.yy" to "dd.mm"
     def create_date_lbls(self):
@@ -193,3 +212,40 @@ class DailyTasks:
             self.tasks_list.insert(0, "")
             self.done.insert(0, "")
         print(self.dates)
+
+    def edit(self):
+
+        if self.edit_btn_pressed:
+            self.edit_btn_pressed = False
+            # Disable entry's
+            # self.days_task1_entry.config(state="disabled")
+            # self.days_task2_entry.config(state="disabled")
+            self.days_task3_entry.config(state="disabled")
+            self.days_task4_entry.config(state="disabled")
+            self.days_task5_entry.config(state="disabled")
+            self.days_task6_entry.config(state="disabled")
+
+            # self.days_done1_entry.config(state="disabled")
+            # self.days_done2_entry.config(state="disabled")
+            self.days_done3_entry.config(state=DISABLED)
+            self.days_done4_entry.config(state=DISABLED)
+            self.days_done5_entry.config(state=DISABLED)
+            self.days_done6_entry.config(state=DISABLED)
+        else:
+            self.edit_btn_pressed = True
+            # Enable entry's
+            # self.days_task1_entry.config(state="disabled")
+            # self.days_task2_entry.config(state="disabled")
+            self.days_task3_entry.config(state=NORMAL)
+            self.days_task4_entry.config(state=NORMAL)
+            self.days_task5_entry.config(state=NORMAL)
+            self.days_task6_entry.config(state=NORMAL)
+
+            # self.days_done1_entry.config(state="disabled")
+            # self.days_done2_entry.config(state="disabled")
+            self.days_done3_entry.config(state=NORMAL)
+            self.days_done4_entry.config(state=NORMAL)
+            self.days_done5_entry.config(state=NORMAL)
+            self.days_done6_entry.config(state=NORMAL)
+
+
