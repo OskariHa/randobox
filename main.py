@@ -73,9 +73,9 @@ status.pack(side=LEFT)
 statusbar.pack(side=BOTTOM, fill=X)
 
 # ****** Actual stuff ********
-task_frame = Frame(root)
-task_frame.pack()
+drawing_frame = Frame(root)
+drawing_frame.pack()
 
-tasks = DailyTasks(task_frame, toolbar)
+tasks = DailyTasks(drawing_frame, toolbar)
 
 root.mainloop()
