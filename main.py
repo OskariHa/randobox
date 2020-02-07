@@ -9,6 +9,25 @@ def do_nothing():
     print("MORO")
 
 
+def open_stocks():
+    stock_frame = Frame(root)
+    drawing_frame = stock_frame
+    drawing_frame.tkraise()
+    stocks = StockWindow(drawing_frame, toolbar)
+
+
+def open_tasks():
+    # destroy_frame()
+    drawing_frame = Frame(root)
+    drawing_frame.tkraise()
+    tasks = DailyTasks(drawing_frame, toolbar)
+
+
+def destroy_frame():
+    drawing_frame.destroy()
+    print("tuhottu")
+
+
 def login_status123(yees):
     if yees:
         loginstatus = True
@@ -35,7 +54,6 @@ root = Tk()
 root.title("KEKW")
 root.minsize(width=800, height=600)
 root.iconbitmap(default="images/kekw.ico")
-
 # ***** Main Menu ******
 
 menu = Menu(root)
@@ -43,8 +61,8 @@ root.config(menu=menu)
 
 subMenu = Menu(menu)
 menu.add_cascade(label="File", menu=subMenu)
-subMenu.add_command(label="Stats", command=do_nothing)
-subMenu.add_command(label="Accounts", command=do_nothing)
+subMenu.add_command(label="Tasks", command=open_tasks)
+subMenu.add_command(label="Stocks", command=open_stocks)
 subMenu.add_separator()
 subMenu.add_command(label="Exit", command=do_nothing)
 
@@ -77,7 +95,6 @@ statusbar.pack(side=BOTTOM, fill=X)
 drawing_frame = Frame(root)
 drawing_frame.pack()
 
-#tasks = DailyTasks(drawing_frame, toolbar)
-stocks = StockWindow(drawing_frame, toolbar)
+tasks = DailyTasks(drawing_frame, toolbar)
 
 root.mainloop()
