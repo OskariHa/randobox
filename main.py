@@ -2,6 +2,7 @@ from tkinter import *
 from project_tasks import DailyTasks
 from timer import Timer
 from loginwindow import LoginWindow
+from stockwindow import StockWindow
 
 
 def do_nothing():
@@ -76,6 +77,7 @@ statusbar.pack(side=BOTTOM, fill=X)
 drawing_frame = Frame(root)
 drawing_frame.pack()
 
-tasks = DailyTasks(drawing_frame, toolbar)
+#tasks = DailyTasks(drawing_frame, toolbar)
+stocks = StockWindow(drawing_frame, toolbar)
 
 root.mainloop()

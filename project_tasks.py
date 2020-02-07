@@ -39,12 +39,12 @@ class DailyTasks:
 
         # top labels
         self.main_tasks_lbl = Label(root, text="Tasks")
-        self.main_tasks_lbl.grid(row=0, column=1, pady=5)
-        self.top_date_lbl = Label(root, text="Date")
+        self.main_tasks_lbl.grid(row=0, column=1, pady=(5, 15))
+        self.top_date_lbl = Label(root, text="DATE")
         self.top_date_lbl.grid(row=1, column=0)
-        self.top_plan_lbl = Label(root, text="Days plan")
+        self.top_plan_lbl = Label(root, text="TASK")
         self.top_plan_lbl.grid(row=1, column=1)
-        self.top_done_lbl = Label(root, text="Done")
+        self.top_done_lbl = Label(root, text="COMPLETED")
         self.top_done_lbl.grid(row=1, column=2)
 
         # testing buttons
@@ -71,7 +71,6 @@ class DailyTasks:
                 done_en.config(state="disabled")
 
             self.entries.append([date_lbl, task_en, done_en])
-            print(self.entries)
 
     def submit_task(self):
         #  **** update lists with current data ****
