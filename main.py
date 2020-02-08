@@ -4,28 +4,32 @@ from timer import Timer
 from loginwindow import LoginWindow
 from stockwindow import StockWindow
 
+global drawing_frame, toolbar
+
 
 def do_nothing():
     print("MORO")
 
 
 def open_stocks():
-    stock_frame = Frame(root)
-    drawing_frame = stock_frame
-    drawing_frame.tkraise()
+    switch_frame()
     stocks = StockWindow(drawing_frame, toolbar)
 
 
 def open_tasks():
-    # destroy_frame()
-    drawing_frame = Frame(root)
-    drawing_frame.tkraise()
+    switch_frame()
     tasks = DailyTasks(drawing_frame, toolbar)
 
 
-def destroy_frame():
+def switch_frame():
+    global drawing_frame, toolbar
+    toolbar = Frame(root, bg="grey")
+    toolbar.pack(side=TOP, fill=X)
+
     drawing_frame.destroy()
-    print("tuhottu")
+    drawing_frame = Frame(root)
+    drawing_frame.pack()
+    print("frame swiped")
 
 
 def login_status123(yees):
@@ -74,9 +78,9 @@ editMenu.add_command(label="Redo", command=do_nothing)
 
 toolbar = Frame(root, bg="grey")
 
-insertButt = Button(toolbar, text="Insert Image", command=do_nothing)
+# insertButt = Button(toolbar, text="Insert Image", command=do_nothing)
 # insertButt.pack(side=LEFT, padx=2, pady=2)
-printButt = Button(toolbar, text="Insert Image", command=do_nothing)
+# printButt = Button(toolbar, text="Insert Image", command=do_nothing)
 # printButt.pack(side=LEFT, padx=2, pady=2)
 
 toolbar.pack(side=TOP, fill=X)
@@ -95,6 +99,6 @@ statusbar.pack(side=BOTTOM, fill=X)
 drawing_frame = Frame(root)
 drawing_frame.pack()
 
-tasks = DailyTasks(drawing_frame, toolbar)
+open_tasks()
 
 root.mainloop()
