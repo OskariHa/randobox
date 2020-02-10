@@ -20,6 +20,9 @@ class LoginWindow:
         self.login_name.grid(row=0, column=1)
         self.login_pw.grid(row=1, column=1, padx=5)
 
+        self.login_name.insert(0, "osku")
+        self.login_pw.insert(0, "s")
+
         self.login_button = Button(login_window_frame, text="Login", command=self.loginb)
         self.exit_button = Button(login_window_frame, text="Exit", command=self.exitb)
         self.create_account_button = Button(login_window_frame, text="Create Account",

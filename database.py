@@ -158,6 +158,22 @@ def create_account(username, password, status):
     # account created successfully
     return True
 
+def admin_get_account_info():
+    # Create a database or connect to one
+    conn = sqlite3.connect('database/rando_database.db')
+    # Create cursor
+    c = conn.cursor()
+
+    c.execute("SELECT username, status, oid FROM accounts ORDER BY status")
+    accounts = c.fetchall()
+
+    # Commit changes
+    conn.commit()
+    # Close database connection
+    conn.close()
+
+    return accounts
+
 
 # --------- Database functions --------
 def show_table():

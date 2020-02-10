@@ -3,6 +3,7 @@ from project_tasks import DailyTasks
 from timer import Timer
 from loginwindow import LoginWindow
 from stockwindow import StockWindow
+from accountwindow import AdminAccountWindow
 
 global drawing_frame, toolbar
 
@@ -21,9 +22,14 @@ def open_tasks():
     tasks = DailyTasks(drawing_frame, toolbar)
 
 
+def admin_account_window():
+    switch_frame()
+    AdminAccountWindow(drawing_frame)
+
+
 def switch_frame():
     global drawing_frame, toolbar
-    toolbar = Frame(root, bg="grey")
+    toolbar = Frame(root, bg="green")
     toolbar.pack(side=TOP, fill=X)
 
     drawing_frame.destroy()
@@ -68,15 +74,19 @@ menu.add_cascade(label="File", menu=subMenu)
 subMenu.add_command(label="Tasks", command=open_tasks)
 subMenu.add_command(label="Stocks", command=open_stocks)
 subMenu.add_separator()
-subMenu.add_command(label="Exit", command=do_nothing)
+subMenu.add_command(label="Exit", command=close_program)
 
 editMenu = Menu(menu)
 menu.add_cascade(label="Edit", menu=editMenu)
 editMenu.add_command(label="Redo", command=do_nothing)
 
+adminMenu = Menu(menu)
+menu.add_cascade(label="Admin", menu=adminMenu)
+adminMenu.add_command(label="Accounts", command=admin_account_window)
+
 # ***** Toolbar ******
 
-toolbar = Frame(root, bg="grey")
+toolbar = Frame(root, bg="green")
 
 # insertButt = Button(toolbar, text="Insert Image", command=do_nothing)
 # insertButt.pack(side=LEFT, padx=2, pady=2)
