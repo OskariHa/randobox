@@ -24,11 +24,12 @@ def open_tasks():
 
 def admin_account_window():
     switch_frame()
-    AdminAccountWindow(drawing_frame)
+    AdminAccountWindow(drawing_frame, toolbar)
 
 
 def switch_frame():
     global drawing_frame, toolbar
+    toolbar.destroy()
     toolbar = Frame(root, bg="green")
     toolbar.pack(side=TOP, fill=X)
 
