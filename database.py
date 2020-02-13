@@ -113,7 +113,7 @@ def login(username, userpw):
             return False
 
 
-def admin_delete_account(username):
+def admin_delete_account(oid):
     # Create a database or connect to one
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
@@ -122,7 +122,25 @@ def admin_delete_account(username):
     # c.execute("DELETE FROM accounts WHERE username=?", (username,))
     # c.execute("DELETE FROM accounts WHERE oid=?", (username,))
 
-    c.execute("DELETE FROM daily_tasks WHERE oid=?", (username,))
+    c.execute("DELETE FROM accounts WHERE oid=?", (oid,))
+
+    # Commit changes
+    conn.commit()
+    # Close database connection
+    conn.close()
+
+
+def change_account_status(id, new_status):
+    # Create a database or connect to one
+    conn = sqlite3.connect('database/rando_database.db')
+    # Create cursor
+    c = conn.cursor()
+
+    c.execute("UPDATE accounts SET status = :status WHERE oid = :oid",
+              {
+                  'status': new_status,
+                  'oid': id
+              })
 
     # Commit changes
     conn.commit()

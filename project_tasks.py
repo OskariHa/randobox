@@ -153,11 +153,11 @@ class DailyTasks:
     def edit(self):
         if self.edit_btn_pressed:
             self.edit_btn_pressed = False
-            for x in range(2, 6):
+            for x in range(2, self.num_of_entries):
                 self.entries[x][1].config(state=DISABLED)
                 self.entries[x][2].config(state=DISABLED)
         else:
             self.edit_btn_pressed = True
-            for x in range(2, 6):
+            for x in range(2, self.num_of_entries):
                 self.entries[x][1].config(state=NORMAL)
                 self.entries[x][2].config(state=NORMAL)
