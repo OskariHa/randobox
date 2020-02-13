@@ -151,7 +151,6 @@ class DailyTasks:
         print(self.dates)
 
     def edit(self):
-
         if self.edit_btn_pressed:
             self.edit_btn_pressed = False
             for x in range(2, 6):
