@@ -154,33 +154,11 @@ class DailyTasks:
 
         if self.edit_btn_pressed:
             self.edit_btn_pressed = False
-            # Disable entry's
-            # self.days_task1_entry.config(state="disabled")
-            # self.days_task2_entry.config(state="disabled")
-            self.days_task3_entry.config(state="disabled")
-            self.days_task4_entry.config(state="disabled")
-            self.days_task5_entry.config(state="disabled")
-            self.days_task6_entry.config(state="disabled")
-
-            # self.days_done1_entry.config(state="disabled")
-            # self.days_done2_entry.config(state="disabled")
-            self.days_done3_entry.config(state=DISABLED)
-            self.days_done4_entry.config(state=DISABLED)
-            self.days_done5_entry.config(state=DISABLED)
-            self.days_done6_entry.config(state=DISABLED)
+            for x in range(2, 6):
+                self.entries[x][1].config(state=DISABLED)
+                self.entries[x][2].config(state=DISABLED)
         else:
             self.edit_btn_pressed = True
-            # Enable entry's
-            # self.days_task1_entry.config(state="disabled")
-            # self.days_task2_entry.config(state="disabled")
-            self.days_task3_entry.config(state=NORMAL)
-            self.days_task4_entry.config(state=NORMAL)
-            self.days_task5_entry.config(state=NORMAL)
-            self.days_task6_entry.config(state=NORMAL)
-
-            # self.days_done1_entry.config(state="disabled")
-            # self.days_done2_entry.config(state="disabled")
-            self.days_done3_entry.config(state=NORMAL)
-            self.days_done4_entry.config(state=NORMAL)
-            self.days_done5_entry.config(state=NORMAL)
-            self.days_done6_entry.config(state=NORMAL)
+            for x in range(2, 6):
+                self.entries[x][1].config(state=NORMAL)
+                self.entries[x][2].config(state=NORMAL)
