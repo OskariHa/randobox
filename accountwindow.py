@@ -20,7 +20,7 @@ class AdminAccountWindow:
         self.id_lbl.grid(row=0, column=2)
 
         # Create buttons for toolbar
-        self.delete_btn = Button(toolbar, text="Delete", command=self.admin_delete)
+        self.delete_btn = Button(toolbar, text="Delete mode", command=self.admin_delete)
         self.delete_btn.pack(side=RIGHT, padx=2, pady=2)
         self.create_account_btn = Button(toolbar, text="Create account", command=self.create_account)
         self.create_account_btn.pack(side=RIGHT, padx=2, pady=2)
@@ -48,6 +48,9 @@ class AdminAccountWindow:
         self.create_new_username_ent = Entry(self.root, width=20)
         self.new_confirm_btn = Button(self.root, text="Create account", command=self.confirm_account)
         self.error_lbl = Label(self.root, text="Username already exists", fg="RED")
+
+        # Delete confirm
+        self.delete_confirm_btn = Button(self.toolbar, text="DELETE!", command=self.deleting, fg="RED")
 
     def data_connection(self):
         print("getting data from db")
@@ -119,6 +122,12 @@ class AdminAccountWindow:
 
     # ************* DELETE BUTTON FUNCTIONS ***********************
     def admin_delete(self):
+        self.edit_btn.configure(state=DISABLED)
+        self.create_account_btn.configure(state=DISABLED)
+        self.delete_btn.configure(command=self.cancel_delete_mode)
+        self.delete_confirm_btn.pack(side=RIGHT, padx=2, pady=2)
+
+    def deleting(self):
         print(self.r.get())
         if self.r.get() != 0:
             d_num = self.r.get() - 2
@@ -132,6 +141,12 @@ class AdminAccountWindow:
             self.ids[d_num].grid_forget()
             self.rdy_btns[d_num].grid_forget()
             self.r.set(0)
+
+    def cancel_delete_mode(self):
+        self.edit_btn.configure(state=ACTIVE)
+        self.create_account_btn.configure(state=ACTIVE)
+        self.delete_btn.configure(command=self.admin_delete)
+        self.delete_confirm_btn.pack_forget()
 
     # ************* EDIT BUTTON FUNCTIONS ***********************
     def edit_account(self):
