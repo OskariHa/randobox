@@ -4,6 +4,8 @@ from timer import Timer
 from loginwindow import LoginWindow
 from stockwindow import StockWindow
 from accountwindow import AdminAccountWindow
+from account_class import AccountOptions
+from account import Account
 
 global drawing_frame, toolbar
 
@@ -20,6 +22,11 @@ def open_stocks():
 def open_tasks():
     switch_frame()
     tasks = DailyTasks(drawing_frame, toolbar)
+
+
+def account_info():
+    switch_frame()
+    AccountOptions(drawing_frame)
 
 
 def admin_account_window():
@@ -81,9 +88,15 @@ editMenu = Menu(menu)
 menu.add_cascade(label="Edit", menu=editMenu)
 editMenu.add_command(label="Redo", command=do_nothing)
 
-adminMenu = Menu(menu)
-menu.add_cascade(label="Admin", menu=adminMenu)
-adminMenu.add_command(label="Accounts", command=admin_account_window)
+accountMenu = Menu(menu)
+menu.add_cascade(label="Account", menu=accountMenu)
+accountMenu.add_command(label="Change account info", command=account_info)
+
+if Account.status == "master" or Account.status == "admin":
+    print(Account.status)
+    adminMenu = Menu(menu)
+    menu.add_cascade(label="Admin", menu=adminMenu)
+    adminMenu.add_command(label="Accounts", command=admin_account_window)
 
 # ***** Toolbar ******
 

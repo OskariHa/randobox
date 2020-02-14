@@ -1,5 +1,5 @@
 import sqlite3
-
+from account import Account
 
 # --------- project functions ----------
 
@@ -91,7 +91,7 @@ def login(username, userpw):
     # Create cursor
     c = conn.cursor()
 
-    c.execute("SELECT * FROM accounts WHERE username=?", (username,))
+    c.execute("SELECT *, oid FROM accounts WHERE username=?", (username,))
     account_data = c.fetchone()
     # print(account_data[1])
 
@@ -106,6 +106,9 @@ def login(username, userpw):
         if account_data[1] == userpw:
             print("login found")
             # print(account_data)
+            Account.username = username
+            Account.status = account_data[2]
+            Account.oid = account_data[3]
             return True
         else:
             # no password match
@@ -130,7 +133,7 @@ def admin_delete_account(oid):
     conn.close()
 
 
-def change_account_status(id, new_status):
+def change_account_status(oid, new_status):
     # Create a database or connect to one
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
@@ -139,7 +142,25 @@ def change_account_status(id, new_status):
     c.execute("UPDATE accounts SET status = :status WHERE oid = :oid",
               {
                   'status': new_status,
-                  'oid': id
+                  'oid': oid
+              })
+
+    # Commit changes
+    conn.commit()
+    # Close database connection
+    conn.close()
+
+
+def change_username(username, oid):
+    # Create a database or connect to one
+    conn = sqlite3.connect('database/rando_database.db')
+    # Create cursor
+    c = conn.cursor()
+
+    c.execute("UPDATE accounts SET username = :username WHERE oid = :oid",
+              {
+                  'username': username,
+                  'oid': oid
               })
 
     # Commit changes
@@ -176,6 +197,7 @@ def create_account(username, password, status):
     # account created successfully
     return True
 
+
 def admin_get_account_info():
     # Create a database or connect to one
     conn = sqlite3.connect('database/rando_database.db')
@@ -201,6 +223,22 @@ def show_table():
     c = conn.cursor()
 
     c.execute("SELECT *, oid FROM daily_tasks")
+    accounts = c.fetchall()
+
+    print(accounts)
+
+    # Commit changes
+    conn.commit()
+    # Close database connection
+    conn.close()
+
+def show_accounts():
+    # Create a database or connect to one
+    conn = sqlite3.connect('database/rando_database.db')
+    # Create cursor
+    c = conn.cursor()
+
+    c.execute("SELECT *, oid FROM accounts")
     accounts = c.fetchall()
 
     print(accounts)

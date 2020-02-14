@@ -1,6 +1,7 @@
 from tkinter import *
-from database import create_account, admin_delete_account, show_table, login
+from database import create_account, admin_delete_account, show_accounts, login
 import tkinter.messagebox
+from account_class import Account
 
 
 class LoginWindow:
@@ -31,7 +32,7 @@ class LoginWindow:
                                             command=self.del_account)
 
         # testing button
-        self.show_db_btn = Button(login_window_frame, text="show db", command=show_table)
+        self.show_db_btn = Button(login_window_frame, text="show db", command=show_accounts)
 
         self.login_button.grid(row=2, column=1, sticky=W, padx=10, pady=10)
         self.exit_button.grid(row=2, column=1, sticky=E, padx=10, pady=10)
@@ -47,7 +48,6 @@ class LoginWindow:
         login_success = login(self.login_name.get(), self.login_pw.get())
 
         # print("no pw")
-
         if login_success:
             print("loggging")
             self.window.destroy()
