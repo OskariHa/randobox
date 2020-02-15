@@ -1,6 +1,7 @@
 import sqlite3
 from account import Account
 
+
 # --------- project functions ----------
 
 # get project timetables
@@ -157,9 +158,46 @@ def change_username(username, oid):
     # Create cursor
     c = conn.cursor()
 
+    c.execute("SELECT username FROM accounts")
+    accounts = c.fetchall()
+
+    if username in accounts:
+        print("täällä ollaa")
+    for account in accounts:
+        print(username)
+        print(account)
+        if username in account:
+            # Commit changes
+            conn.commit()
+            # Close database connection
+            conn.close()
+            return False
+
     c.execute("UPDATE accounts SET username = :username WHERE oid = :oid",
               {
                   'username': username,
+                  'oid': oid
+              })
+
+    Account.username = username
+
+    # Commit changes
+    conn.commit()
+    # Close database connection
+    conn.close()
+
+    return True
+
+
+def change_password(password, oid):
+    # Create a database or connect to one
+    conn = sqlite3.connect('database/rando_database.db')
+    # Create cursor
+    c = conn.cursor()
+
+    c.execute("UPDATE accounts SET password = :password WHERE oid = :oid",
+              {
+                  'password': password,
                   'oid': oid
               })
 
@@ -167,6 +205,23 @@ def change_username(username, oid):
     conn.commit()
     # Close database connection
     conn.close()
+
+
+def get_password(oid):
+    # Create a database or connect to one
+    conn = sqlite3.connect('database/rando_database.db')
+    # Create cursor
+    c = conn.cursor()
+
+    c.execute("SELECT password FROM accounts WHERE oid=?", (oid,))
+    password = c.fetchone()
+
+    # Commit changes
+    conn.commit()
+    # Close database connection
+    conn.close()
+
+    return password
 
 
 def create_account(username, password, status):
@@ -231,6 +286,7 @@ def show_table():
     conn.commit()
     # Close database connection
     conn.close()
+
 
 def show_accounts():
     # Create a database or connect to one
