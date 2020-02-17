@@ -9,125 +9,134 @@ class DailyTasks:
     def __init__(self, root, toolbar):
         self.root = root
 
+        # todays strings
         self.todays_date = date.today()
-        self.tomorrows_date = date.today() + timedelta(days=1)
         self.todays_date_str = self.todays_date.strftime("%d.%m")
+        # tomorrows date string
+        self.tomorrows_date = date.today() + timedelta(days=1)
         self.tomorrows_date_str = self.tomorrows_date.strftime("%d.%m")
+        # different formatting for database
         self.date_n_year = self.todays_date.strftime("%m.%d.%y")
         self.tomorrow_date_n_year = self.tomorrows_date.strftime("%m.%d.%y")
 
+        # --------------- data for screen --------------------
+        # empty data lists for dates,tasks,and done
         self.dates = []
         self.tasks_list = []
         self.done = []
         self.get_data()
 
+        # list of date labels
         self.date_lbls = self.create_date_lbls()
-        print(self.dates)
 
+        # list of entries for tasks and done
         self.entries = []
+        # Number of entries shown on frame
         self.num_of_entries = 6
+        # function to create entries
         self.create_entries()
 
-        # toolbar buttons
+        # --------- toolbar buttons -------------------
+        # submits data from entries
         self.submit_btn = Button(toolbar, text="Submit", command=self.submit_task)
+        # reverts back to first loaded entries
         self.revert_btn = Button(toolbar, text="Revert Changes", command=self.revert_changes)
+        # opens entries for editing
         self.edit_btn = Button(toolbar, text="Edit", command=self.edit)
+        # variable to show edit button is not pressed
         self.edit_btn_pressed = False
+
+        # pack buttons to toolbar submit / edit / revert
         self.revert_btn.pack(side=RIGHT, padx=2, pady=2)
         self.edit_btn.pack(side=RIGHT, padx=2, pady=2)
         self.submit_btn.pack(side=RIGHT, padx=2, pady=2)
 
-        # top labels
+        # top label tasks
         self.main_tasks_lbl = Label(root, text="Tasks")
         self.main_tasks_lbl.grid(row=0, column=1, pady=(5, 15))
+
+        # date label for grids
         self.top_date_lbl = Label(root, text="DATE")
         self.top_date_lbl.grid(row=1, column=0)
+
+        # task label for grids
         self.top_plan_lbl = Label(root, text="TASK")
         self.top_plan_lbl.grid(row=1, column=1)
+
+        # completed label for grids
         self.top_done_lbl = Label(root, text="COMPLETED")
         self.top_done_lbl.grid(row=1, column=2)
 
-        # testing buttons
+        # --------- testing buttons ---------------------
         self.show_db_btn = Button(root, text="show db", command=show_table)
         self.show_data_btn = Button(root, text="show data", command=self.get_data)
         self.show_db_btn.grid(row=12, column=1)
         self.show_data_btn.grid(row=12, column=2)
 
+    # create entries for tasks and completed
     def create_entries(self):
+        # loop for num of entries to create entries
         for i in range(self.num_of_entries):
+            # create date labels from date_lbls for saved dates
             date_lbl = Label(self.root, text=self.date_lbls[i], width=10)
+            # create empty entries for task and done
             task_en = Entry(self.root, width=30)
             done_en = Entry(self.root, width=30)
 
+            # grid -- date / task / done
             date_lbl.grid(row=i + 2, column=0)
             task_en.grid(row=i + 2, column=1)
             done_en.grid(row=i + 2, column=2)
 
+            # fill task and done entries from database
             task_en.insert(0, self.tasks_list[i])
             done_en.insert(0, self.done[i])
 
+            # disable all but first 2 entries on task and done
             if i >= 2:
                 task_en.config(state="disabled")
                 done_en.config(state="disabled")
 
+            # add date,task,done entries to entries list for later access
             self.entries.append([date_lbl, task_en, done_en])
 
+    # submits data from entries to database
     def submit_task(self):
-        #  **** update lists with current data ****
         # self.dates = []
         # self.dates.append(self.dates)
+
+        # empty lists for updated data
         self.tasks_list = []
         self.done = []
 
+        # update lists with current data from entries (needed for revert)
         for en in self.entries:
             self.tasks_list.append(en[1].get())
             self.done.append(en[2].get())
 
-        # **** get data from lists ****
+        # get data from lists for list of list for database
         temp = []
-        i = 0
-        while i < len(self.done):
+        for i in range(len(self.done)):
             temp += [(self.dates[i], self.tasks_list[i], self.done[i])]
-            i += 1
-        for t in temp:
-            print(t)
-        # temp = [("30.1", "fiasko", "ei tullu")]
+
+        # update database with database.submit_tasks(table name, temp list of entries)
         submit_tasks("daily_tasks", temp)
 
     # reverts inputs in entries to loaded values
     def revert_changes(self):
-        # Empty entry's
-        self.days_task1_entry.delete(0, END)
-        self.days_task2_entry.delete(0, END)
-        self.days_task3_entry.delete(0, END)
-        self.days_task4_entry.delete(0, END)
-        self.days_task5_entry.delete(0, END)
-        self.days_task6_entry.delete(0, END)
+        for i, entry in enumerate(self.entries, start=0):
+            # Empty entries
+            entry[1].delete(0, END)
+            entry[2].delete(0, END)
 
-        self.days_done1_entry.delete(0, END)
-        self.days_done2_entry.delete(0, END)
-        self.days_done3_entry.delete(0, END)
-        self.days_done4_entry.delete(0, END)
-        self.days_done5_entry.delete(0, END)
-        self.days_done6_entry.delete(0, END)
-
-        # Fill entry's
-        self.days_task1_entry.insert(0, self.tasks_list[0])
-        self.days_task2_entry.insert(0, self.tasks_list[1])
-        self.days_task3_entry.insert(0, self.tasks_list[2])
-        self.days_task4_entry.insert(0, self.tasks_list[3])
-        self.days_task6_entry.insert(0, self.tasks_list[5])
-
-        self.days_done1_entry.insert(0, self.done[0])
-        self.days_done2_entry.insert(0, self.done[1])
-        self.days_done3_entry.insert(0, self.done[2])
-        self.days_done4_entry.insert(0, self.done[3])
-        self.days_done5_entry.insert(0, self.done[4])
-        self.days_done6_entry.insert(0, self.done[5])
+            # Fill entries
+            entry[1].insert(0, self.tasks_list[i])
+            entry[2].insert(0, self.done[i])
 
     # Format date labels for frame from "mm.dd.yy" to "dd.mm"
     def create_date_lbls(self):
         temp_list = []
+        # self.dates list from get_data
         for d in self.dates:
             to_date = datetime.strptime(d, "%m.%d.%y")
             to_string = datetime.strftime(to_date, "%d.%m")
@@ -136,28 +145,32 @@ class DailyTasks:
 
     # Fill data lists from database
     def get_data(self):
+        # database.fetch_tasks(table name) returns list of list (dates,tasks,done)
         mega_list = fetch_tasks("daily_tasks")
-        print(mega_list)
+
         for li in mega_list:
-            # print(li)
             self.dates.append(li[0])
             self.tasks_list.append(li[1])
             self.done.append(li[2])
         print("getting data")
+        # if current date is not first on a list add it to position 0
         if self.date_n_year not in self.dates[0]:
             self.dates.insert(0, self.date_n_year)
             self.tasks_list.insert(0, "")
             self.done.insert(0, "")
-        print(self.dates)
 
+    # edit opens and closes entries for editing
     def edit(self):
+        # takes self.edit_btn_pressed to resolve if entries are normal or disabled
         if self.edit_btn_pressed:
             self.edit_btn_pressed = False
+            # runs through every(task,done)entry after first 2 that are open at all times
             for x in range(2, self.num_of_entries):
                 self.entries[x][1].config(state=DISABLED)
                 self.entries[x][2].config(state=DISABLED)
         else:
             self.edit_btn_pressed = True
+            # runs through every(task,done)entry after first 2 that are open at all times
             for x in range(2, self.num_of_entries):
                 self.entries[x][1].config(state=NORMAL)
                 self.entries[x][2].config(state=NORMAL)
