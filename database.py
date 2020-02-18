@@ -31,10 +31,10 @@ def fetch_tasks(table):
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
     c = conn.cursor()
-
+    # get all by date
     c.execute("SELECT *, oid FROM " + table + " ORDER BY day DESC")
     tasks = c.fetchall()
-
+    # modify data to list of lists
     returned_list = []
     for task in tasks:
         returned_list.append([task[0], task[1], task[2]])
@@ -43,7 +43,7 @@ def fetch_tasks(table):
     conn.commit()
     # Close database connection
     conn.close()
-
+    # return data list
     return returned_list
 
 
@@ -53,15 +53,18 @@ def submit_tasks(table, data_list):
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
     c = conn.cursor()
-
+    # fetch every date on db
     c.execute("SELECT day, oid FROM " + table)
     tasks = c.fetchall()
+    # input list in format[day,plan,done]
     for data in data_list:
         day = data[0]
         plan = data[1]
         done = data[2]
         exist = True
+        # run through db
         for task in tasks:
+            # if date from db matches date from input list replace plan and done to db
             if day in task:
                 c.execute("UPDATE " + table + " SET day_plan = :day_plan, day_done = :day_done WHERE day= :day",
                           {
@@ -71,6 +74,7 @@ def submit_tasks(table, data_list):
                           })
                 exist = False
                 break
+        # if date is not in database create data entry for that date
         if exist:
             c.execute("INSERT INTO " + table + " VALUES(:day, :day_plan, :day_done)",
                       {
@@ -85,28 +89,29 @@ def submit_tasks(table, data_list):
 
 
 # -------- Login and account functions ---------
-# open login
+
 def login(username, userpw):
     # Create a database or connect to one
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
     c = conn.cursor()
-
+    # get account data for username
     c.execute("SELECT *, oid FROM accounts WHERE username=?", (username,))
     account_data = c.fetchone()
-    # print(account_data[1])
 
     # Commit changes
     conn.commit()
     # Close database connection
     conn.close()
+    # if username is not in database
     if account_data is None:
         print("no account name")
         print(account_data)
     else:
+        # check if given password matches db password
         if account_data[1] == userpw:
             print("login found")
-            # print(account_data)
+            # set Account up for later use
             Account.username = username
             Account.status = account_data[2]
             Account.oid = account_data[3]
@@ -122,10 +127,7 @@ def admin_delete_account(oid):
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
     c = conn.cursor()
-
-    # c.execute("DELETE FROM accounts WHERE username=?", (username,))
-    # c.execute("DELETE FROM accounts WHERE oid=?", (username,))
-
+    # delete by oid
     c.execute("DELETE FROM accounts WHERE oid=?", (oid,))
 
     # Commit changes
@@ -134,12 +136,14 @@ def admin_delete_account(oid):
     conn.close()
 
 
+# access from admin account window
 def change_account_status(oid, new_status):
     # Create a database or connect to one
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
     c = conn.cursor()
 
+    # update status using oid
     c.execute("UPDATE accounts SET status = :status WHERE oid = :oid",
               {
                   'status': new_status,
@@ -161,24 +165,21 @@ def change_username(username, oid):
     c.execute("SELECT username FROM accounts")
     accounts = c.fetchall()
 
-    if username in accounts:
-        print("täällä ollaa")
     for account in accounts:
-        print(username)
-        print(account)
+        # if username is already in db return false
         if username in account:
             # Commit changes
             conn.commit()
             # Close database connection
             conn.close()
             return False
-
+    # if username was not found add it to db and return true
     c.execute("UPDATE accounts SET username = :username WHERE oid = :oid",
               {
                   'username': username,
                   'oid': oid
               })
-
+    # update username in Account
     Account.username = username
 
     # Commit changes
@@ -194,7 +195,7 @@ def change_password(password, oid):
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
     c = conn.cursor()
-
+    # change password using oid
     c.execute("UPDATE accounts SET password = :password WHERE oid = :oid",
               {
                   'password': password,
@@ -212,7 +213,7 @@ def get_password(oid):
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
     c = conn.cursor()
-
+    # find password using oid
     c.execute("SELECT password FROM accounts WHERE oid=?", (oid,))
     password = c.fetchone()
 
@@ -234,8 +235,7 @@ def create_account(username, password, status):
     accounts = c.fetchall()
     print(accounts)
     for account in accounts:
-        temp_un = "('" + username + "',)"
-        print(account)
+        # check if username is in db if it is return false else add account and return true
         if username in account:
             print("Username already exists")
             return False
@@ -258,7 +258,7 @@ def admin_get_account_info():
     conn = sqlite3.connect('database/rando_database.db')
     # Create cursor
     c = conn.cursor()
-
+    # finds every username and status and oid for those and returns them
     c.execute("SELECT username, status, oid FROM accounts ORDER BY status")
     accounts = c.fetchall()
 
@@ -325,21 +325,21 @@ def create_database(dbname, dbcontent):
     conn.commit()
     # Close database connection
     conn.close()
-
+    # Created databases
     '''
-    c.execute("""CREATE TABLE accounts (
-        username text,
-        password text,
-        status text
-        )""")
-    c.execute("""CREATE TABLE daily_tasks (
-        day text,
-        day_plan text,
-        day_done text
-        )""")
-    c.execute("""CREATE TABLE weekly_tasks (
-        day text,
-        week_plan text,
-        week_done text
-        )""")
+    # c.execute("""CREATE TABLE accounts (
+        # username text,
+        # password text,
+        # status text
+        # )""")
+    # c.execute("""CREATE TABLE daily_tasks (
+        # day text,
+        # day_plan text,
+        # day_done text
+        # )""")
+    # c.execute("""CREATE TABLE weekly_tasks (
+        # day text,
+        # week_plan text,
+        # week_done text
+        # )""")
     '''

@@ -95,7 +95,7 @@ class LoginWindow:
     # to be deleted
     def show_db(self):
         try:
-            show_table(self.login_name.get())
+            show_accounts()
         except NameError:
             print("enter correct table name")
 
