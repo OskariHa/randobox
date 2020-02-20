@@ -1,7 +1,7 @@
 from tkinter import *
 from database import create_account, admin_delete_account, show_accounts, login
 import tkinter.messagebox
-from account_class import Account
+from account_window import Account
 
 
 class LoginWindow:

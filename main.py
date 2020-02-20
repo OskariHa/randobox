@@ -3,37 +3,40 @@ from project_tasks import DailyTasks
 from timer import Timer
 from loginwindow import LoginWindow
 from stockwindow import StockWindow
-from accountwindow import AdminAccountWindow
-from account_class import AccountOptions
+from admin_account_window import AdminAccountWindow
+from account_window import AccountOptions
 from account import Account
 
+
+# frame for apps and toolbar
 global drawing_frame, toolbar
 
 
-def do_nothing():
-    print("MORO")
-
-
+# start stockwindow.StockWindow(frame, toolbar)
 def open_stocks():
     switch_frame()
     stocks = StockWindow(drawing_frame, toolbar)
 
 
+# start project_tasks.DailyTasks(frame, toolbar)
 def open_tasks():
     switch_frame()
     tasks = DailyTasks(drawing_frame, toolbar)
 
 
+# start account_class.AccountOptions(frame)
 def account_info():
     switch_frame()
     AccountOptions(drawing_frame)
 
 
+# start accountwindow.AdminAccountWindow(frame,toolbar)
 def admin_account_window():
     switch_frame()
     AdminAccountWindow(drawing_frame, toolbar)
 
 
+# switching app to display on frame
 def switch_frame():
     global drawing_frame, toolbar
     toolbar.destroy()
@@ -46,30 +49,28 @@ def switch_frame():
     print("frame swiped")
 
 
-def login_status123(yees):
-    if yees:
-        loginstatus = True
-
-
+# end program
 def close_program():
     print("exit by x")
     sys.exit()
 
 
-loginstatus = False
-
+# login window for login
 login_window = Tk()
 login_window.minsize(width=300, height=200)
 login_window.protocol("WM_DELETE_WINDOW", close_program)
-login_window.title("KEKW - Login")
+# title and icon
+login_window.title("randobox - Login")
 login_window.iconbitmap(default="images/kekw.ico")
+# frame for login
 login_window_frame = Frame(login_window, bd=1, relief=RAISED)
 login_window_frame.pack(pady=(20, 0), anchor=CENTER)
+# login app and mainloop for login window
 LoginWindow(login_window_frame, login_window)
 login_window.mainloop()
 
 root = Tk()
-root.title("KEKW")
+root.title("randobox")
 root.minsize(width=800, height=600)
 root.iconbitmap(default="images/kekw.ico")
 # ***** Main Menu ******
@@ -77,52 +78,43 @@ root.iconbitmap(default="images/kekw.ico")
 menu = Menu(root)
 root.config(menu=menu)
 
+# basic menu for apps
 subMenu = Menu(menu)
-menu.add_cascade(label="File", menu=subMenu)
+menu.add_cascade(label="Project", menu=subMenu)
 subMenu.add_command(label="Tasks", command=open_tasks)
 subMenu.add_command(label="Stocks", command=open_stocks)
-subMenu.add_separator()
 subMenu.add_command(label="Exit", command=close_program)
 
-editMenu = Menu(menu)
-menu.add_cascade(label="Edit", menu=editMenu)
-editMenu.add_command(label="Redo", command=do_nothing)
-
+# account menu for account settings
 accountMenu = Menu(menu)
 menu.add_cascade(label="Account", menu=accountMenu)
 accountMenu.add_command(label="Change account info", command=account_info)
 
+# check account status to create admin menu
 if Account.status == "master" or Account.status == "admin":
-    print(Account.status)
     adminMenu = Menu(menu)
     menu.add_cascade(label="Admin", menu=adminMenu)
     adminMenu.add_command(label="Accounts", command=admin_account_window)
 
 # ***** Toolbar ******
-
 toolbar = Frame(root, bg="green")
-
-# insertButt = Button(toolbar, text="Insert Image", command=do_nothing)
-# insertButt.pack(side=LEFT, padx=2, pady=2)
-# printButt = Button(toolbar, text="Insert Image", command=do_nothing)
-# printButt.pack(side=LEFT, padx=2, pady=2)
-
 toolbar.pack(side=TOP, fill=X)
 
 # ***** Status Bar *****
-
 statusbar = Frame(root, bd=1, relief=SUNKEN)
-status = Label(statusbar, text="Preparing to do nothing...")
+# watermark on status bar
 watermark = Label(statusbar, text=" |  © 2020 Oskari Haikka")
 watermark.pack(side=RIGHT)
+# timer to start after login
 timer = Timer(statusbar, RIGHT)
-status.pack(side=LEFT)
+# pack on bottom
 statusbar.pack(side=BOTTOM, fill=X)
 
-# ****** Actual stuff ********
+# ******** Start up *****************
+# Frame to draw apps on
 drawing_frame = Frame(root)
 drawing_frame.pack()
-
+# opening page
 open_tasks()
-
+# mainloop for program
 root.mainloop()
