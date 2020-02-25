@@ -65,8 +65,8 @@ class MineSweep:
 
     def nearby_bombs(self, pos):
         # 55 hit /// 44,45,46,54,56,64,65,66
-        checked_positions = [pos - 11, pos - 10, pos - 9, pos - 1, pos + 1,
-                             pos + 9, pos + 10, pos + 11]
+        checked_positions = self.checked_positions(pos)
+
         image_pos = 0
         temp = []
         for i in checked_positions:
@@ -89,8 +89,7 @@ class MineSweep:
 
     def multi_clear(self, temp):
         for pos in temp:
-            checked_positions = [pos - 11, pos - 10, pos - 9, pos - 1, pos + 1,
-                                 pos + 9, pos + 10, pos + 11]
+            checked_positions = self.checked_positions(pos)
             image_pos = 0
             for i in checked_positions:
                 if i in self.bomb_positions:
@@ -103,6 +102,29 @@ class MineSweep:
                 col = int(temp_string[1])
                 self.buttons[row][col].configure(image=self.left_images[image_pos])
 
+    def checked_positions(self, pos):
+        on_left = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+        on_right = [9, 19, 29, 39, 49, 59, 69, 79, 89]
+
+        if pos in on_left:
+            positions = [pos - 10, pos - 9, pos + 1, pos + 10, pos + 11]
+        elif pos in on_right:
+            positions = [pos - 11, pos - 10, pos - 1, pos + 9, pos + 10]
+        else:
+            positions = [pos - 11, pos - 10, pos - 9, pos - 1, pos + 1,
+                         pos + 9, pos + 10, pos + 11]
+
+        val = -12
+        while val < 0:
+            positions = [value for value in positions if value != val]
+            val += 1
+
+        val = 112
+        while val > 99:
+            positions = [value for value in positions if value != val]
+            val -= 1
+
+        return positions
 
     # ************ BOMB HIT *****************
 
