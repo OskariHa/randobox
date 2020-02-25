@@ -31,6 +31,8 @@ class LoginWindow:
         # login button initiates login
         self.login_button = Button(login_window_frame, text="Login", command=self.loginb)
         self.login_button.grid(row=2, column=1, sticky=W, padx=10, pady=10)
+        # login using enter
+        self.window.bind("<Return>", self.callback)
 
         # exit button exits program
         self.exit_button = Button(login_window_frame, text="Exit", command=self.exitb)
@@ -49,6 +51,9 @@ class LoginWindow:
         # testing button
         self.show_db_btn = Button(login_window_frame, text="show db", command=show_accounts)
         self.show_db_btn.grid(row=5, column=1, ipadx=10)
+
+    def callback(self, event):
+        self.loginb()
 
     def loginb(self):
         # database login using name and pw returns true if login details match
