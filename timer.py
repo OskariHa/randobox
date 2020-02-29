@@ -59,42 +59,6 @@ class Timer:
                 self.root.after(1000, self.start)
 
 
-class CountDown:
-
-    def __init__(self, root, side):
-        self.root = root
-        self.running = False
-        self.t = StringVar()
-        self.t.set("999")
-        self.d = str(self.t.get())
-        timer_lbl = Label(root, textvariable=self.t, bg="BLACK", fg="RED", width=10, font="22")
-        timer_lbl.pack(side=LEFT)
-        self.start()
-
-    def reset(self):
-        self.t.set("999")
-
-    def start(self):
-        self.running = True
-        timer = self.t
-        self.timer()
-
-    def stop(self):
-        self.running = False
-
-    def timer(self):
-        if self.running:
-            self.d = str(self.t.get())
-            s = int(self.d)
-            if s == 0:
-                self.stop()
-            else:
-                s -= 1
-            self.d = s
-            self.t.set(self.d)
-            if self.running:
-                self.root.after(1000, self.start)
-
 
 '''
 root = Tk()

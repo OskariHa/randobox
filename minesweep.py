@@ -1,7 +1,6 @@
 from tkinter import *
 from random import randint
 from functools import partial
-from timer import CountDown
 
 
 class MineSweep:
@@ -19,7 +18,8 @@ class MineSweep:
         # bombs
         self.num_of_bombs = 10
         # for counter on toolbar
-        self.bomb_counter = self.num_of_bombs
+        self.bomb_counter = StringVar()
+        self.bomb_counter.set(str(self.num_of_bombs))
 
         # empty grid
         self.playing_grid = self.grid()
@@ -32,53 +32,71 @@ class MineSweep:
         self.clicked = "f"
         self.btn_pos = None
 
-        timer = CountDown(toolbar, LEFT)
-
-        restart = Button(toolbar, text="show grid", command=lambda: print(self.playing_grid))
-        restart.pack(side=TOP)
-
-        self.bomb_counter_lbl = Label(toolbar, textvariable=self.bomb_counter,
-                                      bg="BLACK", fg="RED", width=10)
-        self.bomb_counter_lbl.pack(side=RIGHT)
-
         self.running = True
+
+        # timer variables
+        self.t = StringVar()
+        self.t.set("999")
+        self.d = str(self.t.get())
+
+        self.create_timer()
+
+        restart = Button(toolbar, text="show grid", command=self.restart)
+        restart.grid(row=0, column=1, padx=90)
+        self.bomb_counter_lbl = Label(toolbar, textvariable=self.bomb_counter,
+                                      bg="BLACK", fg="RED", width=10, font=36)
+        self.bomb_counter_lbl.grid(row=0, column=2, padx=90)
+
+        self.wonned = Label(root, text="YOU WON!!", fg="GREEN")
 
     # *************** ONCLICK FUNCTIONS ******************
 
     def onclick_left(self, pos, image_pos, event):
-        # print("left")
-        # print(pos)
 
-        if pos in self.bomb_positions:
-            self.bomb_hit(pos)
+        if self.running:
 
-        else:
-            self.nearby_bombs(pos)
+            if pos in self.bomb_positions:
+                self.bomb_hit(pos)
+
+            else:
+                self.nearby_bombs(pos)
 
     def onclick_right(self, pos, image_pos, event):
-        # print("right")
-        # print(pos)
-        if image_pos != 2:
-            image_pos += 1
-        else:
-            image_pos = 0
+        if self.running:
+            # add flag count
+            if image_pos == 1:
+                temp_string = str(self.bomb_counter.get())
+                temp_int = int(temp_string)
+                temp_int += 1
+                temp_string = temp_int
+                self.bomb_counter.set(temp_string)
 
-        if image_pos == 1:
-            tem = int(self.bomb_counter)
-            tem -= 1
-            self.bomb_counter = str(tem)
+            if image_pos != 2:
+                image_pos += 1
+            else:
+                image_pos = 0
 
-        if pos in range(0, 10):
-            self.buttons[0][pos].configure(image=self.right_images[image_pos])
-            print(self.playing_grid[0][pos])
-            self.buttons[0][pos].bind("<Button-3>", partial(self.onclick_right, pos, image_pos))
-        else:
-            temp_string = str(pos)
-            row = int(temp_string[0])
-            col = int(temp_string[1])
-            print(self.playing_grid[row][col])
-            self.buttons[row][col].configure(image=self.right_images[image_pos])
-            self.buttons[row][col].bind("<Button-3>", partial(self.onclick_right, pos, image_pos))
+            # remove flag count
+            if image_pos == 1:
+                temp_string = str(self.bomb_counter.get())
+                temp_int = int(temp_string)
+                temp_int -= 1
+                temp_string = temp_int
+                self.bomb_counter.set(temp_string)
+
+            if pos in range(0, 10):
+                self.buttons[0][pos].configure(image=self.right_images[image_pos])
+                # print(self.playing_grid[0][pos])
+                self.buttons[0][pos].bind("<Button-3>", partial(self.onclick_right, pos,
+                                                                image_pos))
+            else:
+                temp_string = str(pos)
+                row = int(temp_string[0])
+                col = int(temp_string[1])
+                # print(self.playing_grid[row][col])
+                self.buttons[row][col].configure(image=self.right_images[image_pos])
+                self.buttons[row][col].bind("<Button-3>", partial(self.onclick_right, pos,
+                                                                  image_pos))
 
     # ********** NEARBY BOMBS **************
 
@@ -132,7 +150,8 @@ class MineSweep:
                     no_closed_spots = False
 
         if no_closed_spots:
-            print("LOPPU")
+            self.wonned.grid(row=self.grid_size + 1, columnspan=10)
+            self.end_game()
 
     def multi_clear(self, adjacent):
         for i in adjacent:
@@ -176,11 +195,35 @@ class MineSweep:
             else:
                 if b in range(0, 10):
                     self.buttons[0][b].configure(image=self.bomb_images[1])
+                    self.end_game()
                 else:
                     temp_string = str(b)
                     row = int(temp_string[0])
                     col = int(temp_string[1])
                     self.buttons[row][col].configure(image=self.bomb_images[1])
+                    self.end_game()
+
+    # ***************** END GAME AND RESTART *************
+    def end_game(self):
+        self.running = False
+
+    def restart(self):
+        # empty grid
+        self.playing_grid = self.grid()
+        # create bombs
+        self.bomb_positions = self.create_bombs()
+        self.add_bombs()
+
+        self.buttons = self.draw_grid()
+
+        self.clicked = "f"
+        self.btn_pos = None
+        self.bomb_counter.set(str(self.num_of_bombs))
+
+        self.running = True
+
+        self.reset_timer()
+        self.start_timer()
 
     # ****************** Setup ***************************
 
@@ -293,3 +336,33 @@ class MineSweep:
         explosion_img = explosion_img.subsample(22)
 
         return [explosion_img, bomb_img]
+
+    # ********************** TIMER *************
+    def create_timer(self):
+        timer_lbl = Label(self.toolbar, textvariable=self.t, bg="BLACK", fg="RED",
+                          width=10, font=36)
+        timer_lbl.grid(row=0, column=0, padx=90)
+        self.start_timer()
+
+    def reset_timer(self):
+        self.t.set("999")
+
+    def start_timer(self):
+        timer = self.t
+        self.timer()
+
+    def stop(self):
+        self.end_game()
+
+    def timer(self):
+        if self.running:
+            self.d = str(self.t.get())
+            s = int(self.d)
+            if s == 0:
+                self.stop()
+            else:
+                s -= 1
+            self.d = s
+            self.t.set(self.d)
+            if self.running:
+                self.root.after(1000, self.start_timer)
