@@ -29,10 +29,21 @@ class DailyTasks:
         # list of date labels
         self.date_lbls = self.create_date_lbls()
 
+        # ---------- ENTRIES -------------
         # list of entries for tasks and done
         self.entries = []
         # Number of entries shown on frame
-        self.num_of_entries = 6
+        self.num_of_entries_list = [
+            "5",
+            "10",
+            "15"
+        ]
+        # string shown on option menu
+        self.num_of_entries_str = StringVar()
+        # set default string
+        self.num_of_entries_str.set(self.num_of_entries_list[0])
+        # int for entries + 1 for aesthetics
+        self.num_of_entries = int(self.num_of_entries_str.get()) + 1
         # function to create entries
         self.create_entries()
 
@@ -46,10 +57,16 @@ class DailyTasks:
         # variable to show edit button is not pressed
         self.edit_btn_pressed = False
 
+        # change number of entries
+        self.num_of_entries_menu = OptionMenu(toolbar, self.num_of_entries_str, *self.num_of_entries_list,
+                                              command=self.more_entries)
+
         # pack buttons to toolbar submit / edit / revert
         self.revert_btn.pack(side=RIGHT, padx=2, pady=2)
         self.edit_btn.pack(side=RIGHT, padx=2, pady=2)
         self.submit_btn.pack(side=RIGHT, padx=2, pady=2)
+
+        self.num_of_entries_menu.pack(side=LEFT, padx=2, pady=2)
 
         # top label tasks
         self.main_tasks_lbl = Label(root, text="Tasks")
@@ -67,11 +84,20 @@ class DailyTasks:
         self.top_done_lbl = Label(root, text="COMPLETED")
         self.top_done_lbl.grid(row=1, column=2)
 
-        # --------- testing buttons ---------------------
-        self.show_db_btn = Button(root, text="show db", command=show_table)
-        self.show_data_btn = Button(root, text="show data", command=self.get_data)
-        self.show_db_btn.grid(row=12, column=1)
-        self.show_data_btn.grid(row=12, column=2)
+    # change the number of entries on screen
+    def more_entries(self, event):
+        self.clear_old()
+        self.date_lbls = self.create_date_lbls()
+        self.num_of_entries = int(self.num_of_entries_str.get()) + 1
+        self.entries = []
+        self.create_entries()
+
+    # clear all entries on frame
+    def clear_old(self):
+        for i in self.entries:
+            i[0].grid_forget()
+            i[1].grid_forget()
+            i[2].grid_forget()
 
     # create entries for tasks and completed
     def create_entries(self):
@@ -80,8 +106,8 @@ class DailyTasks:
             # create date labels from date_lbls for saved dates
             date_lbl = Label(self.root, text=self.date_lbls[i], width=10)
             # create empty entries for task and done
-            task_en = Entry(self.root, width=30)
-            done_en = Entry(self.root, width=30)
+            task_en = Entry(self.root, width=40)
+            done_en = Entry(self.root, width=40)
 
             # grid -- date / task / done
             date_lbl.grid(row=i + 2, column=0)
