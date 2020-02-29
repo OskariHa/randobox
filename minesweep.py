@@ -1,6 +1,7 @@
 from tkinter import *
 from random import randint
 from functools import partial
+from timer import CountDown
 
 
 class MineSweep:
@@ -16,7 +17,9 @@ class MineSweep:
         # grid size
         self.grid_size = 10
         # bombs
-        self.num_of_bombs = 20
+        self.num_of_bombs = 10
+        # for counter on toolbar
+        self.bomb_counter = self.num_of_bombs
 
         # empty grid
         self.playing_grid = self.grid()
@@ -29,11 +32,22 @@ class MineSweep:
         self.clicked = "f"
         self.btn_pos = None
 
+        timer = CountDown(toolbar, LEFT)
+
+        restart = Button(toolbar, text="show grid", command=lambda: print(self.playing_grid))
+        restart.pack(side=TOP)
+
+        self.bomb_counter_lbl = Label(toolbar, textvariable=self.bomb_counter,
+                                      bg="BLACK", fg="RED", width=10)
+        self.bomb_counter_lbl.pack(side=RIGHT)
+
+        self.running = True
+
     # *************** ONCLICK FUNCTIONS ******************
 
     def onclick_left(self, pos, image_pos, event):
-        print("left")
-        print(pos)
+        # print("left")
+        # print(pos)
 
         if pos in self.bomb_positions:
             self.bomb_hit(pos)
@@ -42,24 +56,29 @@ class MineSweep:
             self.nearby_bombs(pos)
 
     def onclick_right(self, pos, image_pos, event):
-        print("right")
-        print(pos)
+        # print("right")
+        # print(pos)
         if image_pos != 2:
             image_pos += 1
         else:
             image_pos = 0
 
+        if image_pos == 1:
+            tem = int(self.bomb_counter)
+            tem -= 1
+            self.bomb_counter = str(tem)
+
         if pos in range(0, 10):
             self.buttons[0][pos].configure(image=self.right_images[image_pos])
+            print(self.playing_grid[0][pos])
             self.buttons[0][pos].bind("<Button-3>", partial(self.onclick_right, pos, image_pos))
         else:
             temp_string = str(pos)
             row = int(temp_string[0])
             col = int(temp_string[1])
+            print(self.playing_grid[row][col])
             self.buttons[row][col].configure(image=self.right_images[image_pos])
             self.buttons[row][col].bind("<Button-3>", partial(self.onclick_right, pos, image_pos))
-
-        print(pos)
 
     # ********** NEARBY BOMBS **************
 
@@ -68,61 +87,75 @@ class MineSweep:
         checked_positions = self.checked_positions(pos)
 
         image_pos = 0
+        no_bombs = True
         temp = []
-        for i in checked_positions:
-            if -1 < i < 100:
-                if i in self.bomb_positions:
-                    image_pos += 1
-                else:
-                    temp.append(i)
-
-        if temp:
-            self.multi_clear(temp)
 
         if pos in range(0, 10):
-            self.buttons[0][pos].configure(image=self.left_images[image_pos])
+            row = 0
+            col = pos
         else:
             temp_string = str(pos)
             row = int(temp_string[0])
             col = int(temp_string[1])
-            self.buttons[row][col].configure(image=self.left_images[image_pos])
-
-    def multi_clear(self, temp):
-        for pos in temp:
-            checked_positions = self.checked_positions(pos)
-            image_pos = 0
-            for i in checked_positions:
+        for i in checked_positions:
+            if -1 < i < 100:
                 if i in self.bomb_positions:
                     image_pos += 1
-            if pos in range(0, 10):
-                self.buttons[0][pos].configure(image=self.left_images[image_pos])
-            else:
-                temp_string = str(pos)
-                row = int(temp_string[0])
-                col = int(temp_string[1])
-                self.buttons[row][col].configure(image=self.left_images[image_pos])
+                    no_bombs = False
+                else:
+                    if -1 < i <= 9:
+                        temp_string = str(i)
+                        row2 = 0
+                        col2 = int(temp_string[0])
+                    else:
+                        temp_string = str(i)
+
+                        row2 = int(temp_string[0])
+                        col2 = int(temp_string[1])
+
+                    if col2 != -1:
+                        if self.playing_grid[row2][col2] != 2:
+                            temp.append(i)
+
+        self.buttons[row][col].grid_forget()
+        self.playing_grid[row][col] = 2
+        pic = Label(self.root, image=self.left_images[image_pos])
+        pic.grid(row=row, column=col)
+        if no_bombs:
+            # print(temp)
+            self.multi_clear(temp)
+
+        no_closed_spots = True
+        for i in self.playing_grid:
+            for t in i:
+                if t == 0:
+                    no_closed_spots = False
+
+        if no_closed_spots:
+            print("LOPPU")
+
+    def multi_clear(self, adjacent):
+        for i in adjacent:
+            self.nearby_bombs(i)
 
     def checked_positions(self, pos):
         on_left = [10, 20, 30, 40, 50, 60, 70, 80, 90]
         on_right = [9, 19, 29, 39, 49, 59, 69, 79, 89]
+        # on_top = [1, 2, 3, 4, 5, 6, 7, 8]
 
-        if pos in on_left:
+        if pos == 0:
+            positions = [pos + 1, pos + 10, pos + 11]
+        elif pos == 99:
+            positions = [pos - 1, pos - 10, pos - 11]
+        # elif pos in on_top:
+        # positions = [pos + 1, pos + 9, pos + 10, pos + 11]
+        elif pos in on_left:
             positions = [pos - 10, pos - 9, pos + 1, pos + 10, pos + 11]
         elif pos in on_right:
             positions = [pos - 11, pos - 10, pos - 1, pos + 9, pos + 10]
         else:
             positions = [pos - 11, pos - 10, pos - 9, pos - 1, pos + 1,
                          pos + 9, pos + 10, pos + 11]
-
-        val = -12
-        while val < 0:
-            positions = [value for value in positions if value != val]
-            val += 1
-
-        val = 112
-        while val > 99:
-            positions = [value for value in positions if value != val]
-            val -= 1
 
         return positions
 
@@ -260,9 +293,3 @@ class MineSweep:
         explosion_img = explosion_img.subsample(22)
 
         return [explosion_img, bomb_img]
-
-
-root = Tk()
-tolbar = 2
-MineSweep(root, tolbar)
-root.mainloop()

@@ -6,6 +6,7 @@ from stockwindow import StockWindow
 from admin_account_window import AdminAccountWindow
 from account_window import AccountOptions
 from account import Account
+from minesweep import MineSweep
 
 
 # frame for apps and toolbar
@@ -28,6 +29,12 @@ def open_tasks():
 def account_info():
     switch_frame()
     AccountOptions(drawing_frame)
+
+
+# run minesweep
+def minesweep():
+    switch_frame()
+    MineSweep(drawing_frame, toolbar)
 
 
 # start accountwindow.AdminAccountWindow(frame,toolbar)
@@ -84,6 +91,11 @@ menu.add_cascade(label="Project", menu=subMenu)
 subMenu.add_command(label="Tasks", command=open_tasks)
 subMenu.add_command(label="Stocks", command=open_stocks)
 subMenu.add_command(label="Exit", command=close_program)
+
+# minesweep menu
+minesweepMenu = Menu(menu)
+menu.add_cascade(label="MineSweep", menu=minesweepMenu)
+minesweepMenu.add_command(label="Play", command=minesweep)
 
 # account menu for account settings
 accountMenu = Menu(menu)
