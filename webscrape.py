@@ -3,11 +3,9 @@ from urllib.request import Request, urlopen as uReq
 
 my_url = "http://services.runescape.com/m=itemdb_rs/Large+blunt+rune+salvage/viewitem?obj=47302"
 
-##my_url = "https://runescape.wiki/w/Huge_blunt_rune_salvage"
-##req = Request(my_url, headers={'User-Agent': 'Mozilla/5.0'})
-##uClient = uReq(req)
 
-uClient = uReq(my_url)
+req = Request(my_url, headers={'User-Agent': 'Mozilla/5.0'})
+uClient = uReq(req)
 page_html = uClient.read()
 uClient.close()
 page_soup = soup(page_html, "html.parser")
