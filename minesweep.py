@@ -36,7 +36,7 @@ class MineSweep:
 
         # timer variables
         self.t = StringVar()
-        self.t.set("999")
+        self.t.set("1000")
         self.d = str(self.t.get())
 
         self.create_timer()
@@ -345,7 +345,7 @@ class MineSweep:
         self.start_timer()
 
     def reset_timer(self):
-        self.t.set("999")
+        self.t.set("1000")
 
     def start_timer(self):
         timer = self.t
