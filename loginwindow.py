@@ -24,9 +24,9 @@ class LoginWindow:
         self.login_name.grid(row=0, column=1)
         self.login_pw.grid(row=1, column=1, padx=5)
 
-        # insert login to save typing :DD
-        self.login_name.insert(0, "osku")
-        self.login_pw.insert(0, "s")
+        # insert login to save typing
+        # self.login_name.insert(0, "osku")
+        # self.login_pw.insert(0, "s")
 
         # login button initiates login
         self.login_button = Button(login_window_frame, text="Login", command=self.loginb)
