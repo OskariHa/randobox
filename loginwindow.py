@@ -48,10 +48,6 @@ class LoginWindow:
                                             command=self.del_account)
         self.delete_account_button.grid(row=4, column=1, ipadx=10)
 
-        # testing button
-        self.show_db_btn = Button(login_window_frame, text="show db", command=show_accounts)
-        self.show_db_btn.grid(row=5, column=1, ipadx=10)
-
     def callback(self, event):
         self.loginb()
 
@@ -96,13 +92,6 @@ class LoginWindow:
             return
 
         return
-
-    # to be deleted
-    def show_db(self):
-        try:
-            show_accounts()
-        except NameError:
-            print("enter correct table name")
 
     # to be deleted
     def del_account(self):
