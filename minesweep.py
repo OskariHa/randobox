@@ -42,7 +42,7 @@ class MineSweep:
         self.create_timer()
 
         restart = Button(toolbar, text="restart", command=self.restart)
-        restart.grid(row=0, column=1, padx=90)
+        restart.grid(row=0, column=1, padx=90, pady=(2, 1))
         self.bomb_counter_lbl = Label(toolbar, textvariable=self.bomb_counter,
                                       bg="BLACK", fg="RED", width=10, font=36)
         self.bomb_counter_lbl.grid(row=0, column=2, padx=90)
