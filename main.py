@@ -2,7 +2,8 @@ from tkinter import *
 from project_tasks import DailyTasks
 from timer import Timer
 from loginwindow import LoginWindow
-from stockwindow import StockWindow
+from stockwindow_updating import StockWindowUpdating
+from stockwindow_static import StockWindowStatic
 from admin_account_window import AdminAccountWindow
 from account_window import AccountOptions
 from account import Account
@@ -13,10 +14,15 @@ from minesweep import MineSweep
 global drawing_frame, toolbar
 
 
-# start stockwindow.StockWindow(frame, toolbar)
-def open_stocks():
+# start stockwindow updating
+def open_stocks_updating():
     switch_frame()
-    stocks = StockWindow(drawing_frame, toolbar)
+    stocks = StockWindowUpdating(drawing_frame, toolbar)
+
+# start stock window static
+def open_stocks_static():
+    switch_frame()
+    stocks = StockWindowStatic(drawing_frame, toolbar)
 
 
 # start project_tasks.DailyTasks(frame, toolbar)
@@ -89,8 +95,13 @@ root.config(menu=menu)
 subMenu = Menu(menu)
 menu.add_cascade(label="Project", menu=subMenu)
 subMenu.add_command(label="Tasks", command=open_tasks)
-subMenu.add_command(label="Stocks", command=open_stocks)
 subMenu.add_command(label="Exit", command=close_program)
+
+# stock menu
+stockmenu = Menu(menu)
+menu.add_cascade(label="Stocks", menu=stockmenu)
+stockmenu.add_command(label="Updating", command=open_stocks_updating)
+stockmenu.add_command(label="Static", command=open_stocks_static)
 
 # minesweep menu
 minesweepMenu = Menu(menu)
