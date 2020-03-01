@@ -59,7 +59,6 @@ def switch_frame():
     drawing_frame.destroy()
     drawing_frame = Frame(root)
     drawing_frame.pack()
-    print("frame swiped")
 
 
 # end program
