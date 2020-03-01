@@ -8,7 +8,7 @@ matplotlib.use("TkAgg")
 style.use("ggplot")
 
 
-class StockWindow:
+class StockWindowUpdating:
 
     def __init__(self, root, toolbar):
         self.root = root
