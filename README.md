@@ -1,5 +1,5 @@
 # basic gui with login and some apps
-1.login with username and password and account roles
+1.login with username and password and account roles \n
   -admin(admin tier) login:admin pw:admin
   -group_member(basic tier) login:guest pw:guest
 2.project table to manage daily tasks
